@@ -3,9 +3,8 @@ using Data.Entities;
 
 namespace Business.Factories;
 
-public class StatusTypeFactory
+public static class StatusTypeFactory
 {
-
     public static StatusTypeModel CreateStatusTypeModel(StatusTypeEntity entity)
     {
         if (entity == null)

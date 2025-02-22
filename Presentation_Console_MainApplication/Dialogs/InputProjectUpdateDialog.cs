@@ -47,11 +47,11 @@ namespace Presentation_Console_MainApplication.Dialogs
             Console.Write("Select customer: ");
             if (!int.TryParse(Console.ReadLine(), out int statusIndex) || statusIndex < 1 || statusIndex > statuses.Count)
             {
-                dto.Status = project.Status.Id;
+ 
             }
             else
             {
-                dto.Status = statuses[statusIndex - 1].Id;
+
             }
 
             return dto;

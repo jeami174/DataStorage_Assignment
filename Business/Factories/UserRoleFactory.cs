@@ -1,4 +1,5 @@
-﻿using System.Net.NetworkInformation;
+﻿using System.Data;
+using System.Net.NetworkInformation;
 using Business.Dtos;
 using Business.Models;
 using Data.Entities;
@@ -23,15 +24,28 @@ public static class UserRoleFactory
         };
     }
 
-    public static UserRoleModel CreateUserRoleModel(UserRoleEntity entity)
+    public static UserRoleModel Create(UserRoleEntity entity)
     {
-        if (entity == null)
-            throw new ArgumentNullException(nameof(entity));
+        var users = new List<UserModel>();
 
-        return new UserRoleModel
+        foreach (var row in entity.Users)
+        {
+            users.Add(new UserModel()
+            {
+                Id = row.Id,
+                FirstName = row.FirstName,
+                LastName = row.LastName,
+                Email = row.Email,
+                RoleId = row.RoleId,
+            });
+        }
+
+
+        return new UserRoleModel()
         {
             Id = entity.Id,
-            RoleName = entity.RoleName
+            RoleName = entity.RoleName,
+            Users = users
         };
     }
 

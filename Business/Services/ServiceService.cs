@@ -8,28 +8,18 @@ using System.Diagnostics;
 
 namespace Business.Services
 {
-    public class ServiceService : IServiceService
+    public class ServiceService(IServiceRepository serviceRepository) : IServiceService
     {
-        private readonly IServiceRepository _serviceRepository;
+        private readonly IServiceRepository _serviceRepository = serviceRepository;
 
-        public ServiceService(IServiceRepository serviceRepository)
-        {
-            _serviceRepository = serviceRepository;
-        }
-
-        /// <summary>
-        /// Skapar en ny service. Returnerar true om skapandet lyckas, annars false.
-        /// </summary>
         public async Task<bool> CreateAsync(ServiceCreateDto dto)
         {
             if (dto == null) return false;
             if (string.IsNullOrWhiteSpace(dto.ServiceName))
                 return false;
 
-            // Normalisera servicens namn
             dto.ServiceName = dto.ServiceName.Trim().ToLower();
 
-            // Kontrollera om en service med samma namn redan finns
             var exists = await _serviceRepository.ExistsAsync(x => x.ServiceName.ToLower() == dto.ServiceName);
             if (exists)
             {
@@ -40,7 +30,6 @@ namespace Business.Services
 
             try
             {
-                // Skapa entiteten och spara den
                 await _serviceRepository.CreateAsync(ServiceFactory.CreateServiceEntity(dto));
                 await _serviceRepository.SaveToDatabaseAsync();
                 await _serviceRepository.CommitTransactionAsync();
@@ -54,9 +43,6 @@ namespace Business.Services
             }
         }
 
-        /// <summary>
-        /// Hämtar alla services med tillhörande Unit.
-        /// </summary>
         public async Task<IEnumerable<ServiceModel>> GetAllServicesAsync()
         {
             try
@@ -71,9 +57,6 @@ namespace Business.Services
             }
         }
 
-        /// <summary>
-        /// Hämtar en service med tillhörande Unit baserat på ID.
-        /// </summary>
         public async Task<ServiceModel?> GetServiceWithUnitAsync(int id)
         {
             try
@@ -89,10 +72,6 @@ namespace Business.Services
                 throw;
             }
         }
-
-        /// <summary>
-        /// Uppdaterar en existerande service. Returnerar true om uppdateringen lyckas, annars false.
-        /// </summary>
         public async Task<bool> UpdateAsync(int id, ServiceUpdateDto dto)
         {
             if (dto == null) return false;
@@ -105,14 +84,12 @@ namespace Business.Services
                 if (entity == null)
                     return false;
 
-                // Uppdatera entiteten med hjälp av fabriken
                 ServiceFactory.UpdateServiceEntity(entity, dto);
 
                 await _serviceRepository.BeginTransactionAsync();
 
                 try
                 {
-                    // Använder den synkrona Update-metoden (från BaseRepository)
                     _serviceRepository.Update(entity);
                     await _serviceRepository.SaveToDatabaseAsync();
                     await _serviceRepository.CommitTransactionAsync();
@@ -132,9 +109,6 @@ namespace Business.Services
             }
         }
 
-        /// <summary>
-        /// Tar bort en service baserat på ID. Returnerar true om borttagningen lyckas, annars false.
-        /// </summary>
         public async Task<bool> DeleteAsync(int id)
         {
             try
@@ -147,7 +121,6 @@ namespace Business.Services
 
                 try
                 {
-                    // Använder den synkrona Delete-metoden
                     _serviceRepository.Delete(entity);
                     await _serviceRepository.SaveToDatabaseAsync();
                     await _serviceRepository.CommitTransactionAsync();

@@ -14,9 +14,6 @@ namespace Business.Services
             _statusTypeRepository = statusTypeRepository;
         }
 
-        /// <summary>
-        /// Hämtar alla StatusType.
-        /// </summary>
         public async Task<IEnumerable<StatusTypeModel>> GetAllStatusTypesAsync()
         {
             var entities = await _statusTypeRepository.GetAllAsync();

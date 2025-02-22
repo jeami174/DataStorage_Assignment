@@ -30,8 +30,8 @@ public class CustomerContactFactory
             FirstName = customerContactEntity.FirstName,
             LastName = customerContactEntity.LastName,
             Email = customerContactEntity.Email,
+            
             CustomerId = customerContactEntity.CustomerId,
-
             Customer = CustomerFactory.CreateCustomerModel(customerContactEntity.Customer)
         };
     }
@@ -40,7 +40,6 @@ public class CustomerContactFactory
     {
         return new CustomerContactEntity
         {
-            Id = entity.Id,
             FirstName = dto.FirstName,
             LastName = dto.LastName,
             Email = dto.Email,

@@ -23,6 +23,9 @@ public class ProjectEntity
     public DateTime EndDate { get; set; }
 
     [Required]
+    public int QuantityofServiceUnits { get; set; }
+
+    [Required]
     public decimal TotalPrice { get; set; }
 
 

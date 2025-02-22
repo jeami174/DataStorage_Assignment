@@ -13,14 +13,14 @@ public static class CustomerFactory
     public static CustomerEntity CreateCustomerEntity(CustomerCreateDto dto) => new()
     {
         CustomerName = dto.CustomerName,
-        CustomerTypeId = dto.CustomerTypeId
     };
 
     public static CustomerModel CreateCustomerModel(CustomerEntity entity)
     {
         var customerContacts = new List<CustomerContactModel>();
 
-        foreach (var row in entity.Contacts)
+        foreach (var row in entity.Contacts ?? Enumerable.Empty<CustomerContactEntity>())
+        {
             customerContacts.Add(new CustomerContactModel
             {
                 FirstName = row.FirstName,
@@ -28,12 +28,12 @@ public static class CustomerFactory
                 Email = row.Email,
                 CustomerId = row.CustomerId,
             });
+        }
 
         return new CustomerModel()
         {
             Id = entity.Id,
             CustomerName = entity.CustomerName,
-            CustomerType = CustomerTypeFactory.CreateCustomerTypeModel(entity.CustomerType),
             CustomerContacts = customerContacts
         };
     }
@@ -41,7 +41,6 @@ public static class CustomerFactory
     public static CustomerEntity CreateUpdatedEntity(CustomerUpdateDto dto, CustomerEntity entity)
     {
         entity.CustomerName = dto.CustomerName;
-        entity.CustomerTypeId = dto.CustomerTypeId;
         return entity;
     }
 

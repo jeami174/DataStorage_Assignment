@@ -6,10 +6,9 @@ public class UserModel
     public string FirstName { get; set; } = string.Empty;
     public string LastName { get; set; } = string.Empty;
     public string Email { get; set; } = string.Empty;
-    public UserRoleModel Role { get; set; } = null!;
 
-    public override string ToString()
-    {
-        return $"{FirstName} {LastName} {Email} ({Role.RoleName})";
-    }
+    public UserRoleModel Role { get; set; } = null!;
+    public int RoleId { get; set; }
+
+    public ICollection<ProjectModel> Projects { get; set; } = null!;
 }

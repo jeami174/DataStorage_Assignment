@@ -2,15 +2,18 @@
 using Business.Factories;
 using Business.Interfaces;
 using Business.Models;
+using Data.Entities;
 using Data.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
+using System.Linq.Expressions;
 
 namespace Business.Services;
 
-public class ProjectService(IProjectRepository projectRepository) : IProjectService
+public class ProjectService(IProjectRepository projectRepository, IServiceRepository serviceRepository) : IProjectService
 {
     private readonly IProjectRepository _projectRepository = projectRepository;
+    private readonly IServiceRepository _serviceRepository = serviceRepository;
 
     public async Task<bool> CreateProjectAsync(ProjectCreateDto dto)
     {
@@ -75,7 +78,6 @@ public class ProjectService(IProjectRepository projectRepository) : IProjectServ
         try
         {
             _projectRepository.Delete(entity);
-
             await _projectRepository.SaveToDatabaseAsync();
             await _projectRepository.CommitTransactionAsync();
             return true;
@@ -90,7 +92,7 @@ public class ProjectService(IProjectRepository projectRepository) : IProjectServ
 
     public async Task<IEnumerable<ProjectModel>> GetAllProjectsAsync()
     {
-        var entities = await _projectRepository.GetAllProjectsWithDetailsAsync();
+        var entities = await _projectRepository.GetAllAsync();
         return entities.Select(ProjectFactory.CreateProjectModel).ToList();
     }
 
@@ -104,10 +106,14 @@ public class ProjectService(IProjectRepository projectRepository) : IProjectServ
                  .Include(p => p.User)
                  .ThenInclude(u => u.Role)
                  .Include(p => p.Status));
-
         return entities.Select(ProjectFactory.CreateProjectModel).ToList();
     }
 
+    public async Task<ProjectModel?> GetProjectByIdAsync(int id)
+    {
+        var entity = await _projectRepository.GetOneAsync(x => x.Id == id);
+        return entity != null ? ProjectFactory.CreateProjectModel(entity) : null;
+    }
 
     public async Task<ProjectModel?> GetProjectWithDetailsByIdAsync(int id)
     {
@@ -123,4 +129,10 @@ public class ProjectService(IProjectRepository projectRepository) : IProjectServ
 
         return entity != null ? ProjectFactory.CreateProjectModel(entity) : null;
     }
+
+    public async Task<bool> CheckIfProjectExists(Expression<Func<ProjectEntity, bool>> predicate)
+    {
+        return await _projectRepository.ExistsAsync(predicate);
+    }
 }
+

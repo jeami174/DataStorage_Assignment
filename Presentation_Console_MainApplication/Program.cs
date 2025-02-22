@@ -13,21 +13,26 @@ using Presentation_Console_MainApplication.Interfaces;
 IHost host = Host.CreateDefaultBuilder(args)
     .ConfigureServices((hostContext, services) =>
     {
-        services.AddDbContext<DataContext>(options =>
-            options.UseSqlServer("Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Projects\\DataStorage_Assignment\\Data\\Databases\\new_database.mdf;Integrated Security=True;Connect Timeout=30"));
+        services.AddDbContext<DataContext>(dboptions =>
+            dboptions.UseSqlServer("Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Projects\\DataStorage_Assignment\\Data\\Databases\\new_database.mdf;Integrated Security=True;Connect Timeout=30"));
 
         services.AddScoped<IProjectRepository, ProjectRepository>();
         services.AddScoped<IProjectService, ProjectService>();
         services.AddScoped<ICustomerRepository, CustomerRepository>();
         services.AddScoped<ICustomerService, CustomerService>();
+        services.AddScoped<ICustomerContactRepository, CustomerContactRepository>();
+        services.AddScoped<ICustomerContactService, CustomerContactService>();
         services.AddScoped<IServiceRepository, ServiceRepository>();
         services.AddScoped<IServiceService, ServiceService>();
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IUserService, UserService>();
+        services.AddScoped<IUserRoleRepository, UserRoleRepository>();
+        services.AddScoped<IUserRoleService, UserRoleService>();
         services.AddScoped<IStatusTypeRepository, StatusTypeRepository>();
         services.AddScoped<IStatusTypeService, StatusTypeService>();
+        services.AddScoped<IUnitRepository, UnitRepository>();
 
-        services.AddSingleton<IUserInterface, ConsoleUserInterface>();
+        services.AddScoped<IUserInterface, ConsoleUserInterface>();
     })
     .Build();
 

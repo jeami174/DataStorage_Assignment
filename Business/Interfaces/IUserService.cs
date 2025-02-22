@@ -7,8 +7,9 @@ namespace Business.Interfaces
     {
         Task<bool> CreateUserAsync(UserCreateDto dto);
         Task<IEnumerable<UserModel>> GetAllUsersAsync();
-        Task<UserModel?> GetUserWithDetailsAsync(int id);
+        Task<UserModel?> GetEmployeeWithDetailsByIdAsync(int id);
         Task<bool> UpdateUserAsync(int id, UserUpdateDto dto);
         Task<bool> DeleteUserAsync(int id);
     }
 }
+

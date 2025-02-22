@@ -7,24 +7,15 @@ using System.Diagnostics;
 
 namespace Business.Services
 {
-    public class UserRoleService : IUserRoleService
+    public class UserRoleService(IUserRoleRepository userRoleRepository) : IUserRoleService
     {
-        private readonly IUserRoleRepository _userRoleRepository;
+        private readonly IUserRoleRepository _userRoleRepository = userRoleRepository;
 
-        public UserRoleService(IUserRoleRepository userRoleRepository)
-        {
-            _userRoleRepository = userRoleRepository;
-        }
-
-        /// <summary>
-        /// Skapar en ny user role. Returnerar true om skapandet lyckas, annars false.
-        /// </summary>
         public async Task<bool> CreateAsync(UserRoleCreateDto dto)
         {
             if (dto == null || string.IsNullOrWhiteSpace(dto.RoleName))
                 return false;
 
-            // Kontrollera om en roll med samma namn redan finns
             var exists = await _userRoleRepository.ExistsAsync(x => x.RoleName.ToLower() == dto.RoleName.ToLower());
             if (exists)
             {
@@ -48,31 +39,31 @@ namespace Business.Services
             }
         }
 
-        /// <summary>
-        /// Hämtar alla user roles.
-        /// </summary>
         public async Task<IEnumerable<UserRoleModel>> GetAllUserRolesAsync()
         {
             var entities = await _userRoleRepository.GetAllAsync();
-            return entities.Select(e => UserRoleFactory.CreateUserRoleModel(e)).ToList();
+            var UserRoleModels = entities.Select(UserRoleFactory.Create).ToList();
+            return UserRoleModels;
         }
 
-        /// <summary>
-        /// Hämtar en user role baserat på ID.
-        /// </summary>
         public async Task<UserRoleModel?> GetUserRoleByIdAsync(int id)
         {
             var exists = await _userRoleRepository.ExistsAsync(x => x.Id == id);
             if (!exists)
+            {
                 return null;
+            }
 
             var entity = await _userRoleRepository.GetOneAsync(x => x.Id == id);
-            return entity != null ? UserRoleFactory.CreateUserRoleModel(entity) : null;
+            if (entity == null)
+            {
+                return null;
+            }
+
+            var userRoleModel = UserRoleFactory.Create(entity);
+            return userRoleModel;
         }
 
-        /// <summary>
-        /// Uppdaterar en existerande user role. Returnerar true om uppdateringen lyckas, annars false.
-        /// </summary>
         public async Task<bool> UpdateAsync(int id, UserRoleUpdateDto dto)
         {
             if (dto == null)
@@ -82,7 +73,6 @@ namespace Business.Services
             if (entity == null)
                 return false;
 
-            // Uppdatera entiteten med hjälp av fabriken
             UserRoleFactory.UpdateUserRoleEntity(entity, dto);
 
             await _userRoleRepository.BeginTransactionAsync();
@@ -102,9 +92,6 @@ namespace Business.Services
             }
         }
 
-        /// <summary>
-        /// Tar bort en user role baserat på ID. Returnerar true om borttagningen lyckas, annars false.
-        /// </summary>
         public async Task<bool> DeleteAsync(int id)
         {
             var entity = await _userRoleRepository.GetOneAsync(x => x.Id == id);

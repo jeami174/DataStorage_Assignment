@@ -22,15 +22,36 @@ public class UserFactory
         };
     }
 
-    public static UserModel CreateUserModel(UserEntity userEntity)
+    public static UserModel Create(UserEntity entity)
     {
-        return new UserModel
+        var projects = new List<ProjectModel>();
+
+        foreach (var row in entity.Projects)
         {
-            Id = userEntity.Id,
-            FirstName = userEntity.FirstName,
-            LastName = userEntity.LastName,
-            Email = userEntity.Email,
-            Role = UserRoleFactory.CreateUserRoleModel(userEntity.Role)
+            projects.Add(new ProjectModel()
+            {
+                Title = row.Title,
+                Description = row.Description,
+                StartDate = row.StartDate,
+                EndDate = row.EndDate,
+                QuantityofServiceUnits = row.QuantityofServiceUnits,
+                TotalPrice = row.TotalPrice,
+                CustomerId = row.CustomerId,
+                StatusId = row.StatusId,
+                UserId = row.UserId,
+                ServiceId = row.ServiceId
+            });
+        }
+
+        return new UserModel()
+        {
+            Id = entity.Id,
+            FirstName = entity.FirstName,
+            LastName = entity.LastName,
+            Email = entity.Email,
+            RoleId = entity.RoleId,
+            Projects = projects,
+            Role = UserRoleFactory.Create(entity.Role),
         };
     }
 
@@ -39,7 +60,6 @@ public class UserFactory
         entity.FirstName = dto.FirstName;
         entity.LastName = dto.LastName;
         entity.Email = dto.Email;
-        entity.RoleId = dto.RoleId;
         return entity;
     }
 }
