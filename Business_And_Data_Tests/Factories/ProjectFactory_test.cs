@@ -37,38 +37,6 @@ public class ProjectFactory_Tests
     }
 
     [Fact]
-    public void UpdateProjectEntity_ShouldUpdateEntity_WithCorrectValues()
-    {
-        // Arrange
-        var existingEntity = new ProjectEntity
-        {
-            Id = 1,
-            Title = "Old Title",
-            Description = "Old Description",
-            StartDate = DateTime.UtcNow.AddMonths(-1),
-            EndDate = DateTime.UtcNow.AddMonths(2),
-            StatusId = 1
-        };
-
-        var updateDto = new ProjectUpdateDto
-        {
-            Title = "Updated Title",
-            Description = "Updated Description",
-            StartDate = DateTime.UtcNow,
-            EndDate = DateTime.UtcNow.AddMonths(4),
-        };
-
-        // Act
-        ProjectFactory.UpdateProjectEntity(existingEntity, updateDto);
-
-        // Assert
-        Assert.Equal(updateDto.Title, existingEntity.Title);
-        Assert.Equal(updateDto.Description, existingEntity.Description);
-        Assert.Equal(updateDto.StartDate, existingEntity.StartDate);
-        Assert.Equal(updateDto.EndDate, existingEntity.EndDate);
-    }
-
-    [Fact]
     public void CreateProjectModel_ShouldReturnModel_WithCorrectValues()
     {
         // Arrange

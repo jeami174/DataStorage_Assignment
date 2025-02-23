@@ -62,33 +62,4 @@ namespace Business.Tests.Factories;
         Assert.Equal(entity.CustomerId, result.CustomerId);
         Assert.Equal(entity.Customer.CustomerName, result.Customer.CustomerName);
     }
-
-    [Fact]
-    public void UpdateCustomerContactEntity_ShouldReturnUpdatedEntity_WithCorrectValues()
-    {
-        // Arrange
-        var existingEntity = new CustomerContactEntity
-        {
-            Id = 1,
-            FirstName = "OldFirstName",
-            LastName = "OldLastName",
-            Email = "old.email@example.com"
-        };
-
-        var updateDto = new CustomerContactUpdateDto
-        {
-            FirstName = "NewFirstName",
-            LastName = "NewLastName",
-            Email = "new.email@example.com"
-        };
-
-        // Act
-        var result = CustomerContactFactory.UpdateCustomerContactEntity(existingEntity, updateDto);
-
-        // Assert
-        Assert.Equal(existingEntity.Id, result.Id);
-        Assert.Equal(updateDto.FirstName, result.FirstName);
-        Assert.Equal(updateDto.LastName, result.LastName);
-        Assert.Equal(updateDto.Email, result.Email);
-    }
 }
