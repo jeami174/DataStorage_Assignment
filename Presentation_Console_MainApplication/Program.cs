@@ -31,6 +31,7 @@ IHost host = Host.CreateDefaultBuilder(args)
         services.AddScoped<IStatusTypeRepository, StatusTypeRepository>();
         services.AddScoped<IStatusTypeService, StatusTypeService>();
         services.AddScoped<IUnitRepository, UnitRepository>();
+        services.AddScoped<IUnitService, UnitService>();
 
         services.AddScoped<IUserInterface, ConsoleUserInterface>();
     })

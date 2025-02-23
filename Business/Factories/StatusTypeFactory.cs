@@ -1,5 +1,6 @@
 ﻿using Business.Models;
 using Data.Entities;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Business.Factories;
 
@@ -14,6 +15,17 @@ public static class StatusTypeFactory
         {
             Id = entity.Id,
             StatusTypeName = entity.StatusTypeName
+        };
+    }
+
+    public static StatusTypeEntity CreateStatusTypeEntity(string name)
+    {
+        if (name.IsNullOrEmpty())
+            throw new ArgumentNullException();
+
+        return new StatusTypeEntity
+        {
+            StatusTypeName = name
         };
     }
 }

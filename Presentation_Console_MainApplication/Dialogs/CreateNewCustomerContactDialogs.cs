@@ -1,15 +1,10 @@
-﻿using System;
-using System.Threading.Tasks;
-using Business.Dtos;
+﻿using Business.Dtos;
 using Business.Interfaces;
 
 namespace Presentation_Console_MainApplication.Dialogs
 {
     public static class CreateNewCustomerContactDialogs
     {
-        /// <summary>
-        /// Skapar en ny kontaktperson kopplad till den angivna kunden.
-        /// </summary>
         public static async Task CreateNewContactAsync(int customerId, ICustomerContactService customerContactService)
         {
             Console.Clear();

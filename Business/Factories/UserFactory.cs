@@ -26,22 +26,10 @@ public class UserFactory
     {
         var projects = new List<ProjectModel>();
 
-        foreach (var row in entity.Projects)
-        {
-            projects.Add(new ProjectModel()
-            {
-                Title = row.Title,
-                Description = row.Description,
-                StartDate = row.StartDate,
-                EndDate = row.EndDate,
-                QuantityofServiceUnits = row.QuantityofServiceUnits,
-                TotalPrice = row.TotalPrice,
-                CustomerId = row.CustomerId,
-                StatusId = row.StatusId,
-                UserId = row.UserId,
-                ServiceId = row.ServiceId
-            });
-        }
+        //foreach (var row in entity.Projects)
+        //{            
+        //    projects.Add(ProjectFactory.CreateProjectModel(row));
+        //}
 
         return new UserModel()
         {

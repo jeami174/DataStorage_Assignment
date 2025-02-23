@@ -48,7 +48,7 @@ namespace Business.Services
 
         public async Task<IEnumerable<UserModel>> GetAllUsersAsync()
         {
-            var entities = await _userRepository.GetAllAsync();
+            var entities = await _userRepository.GetAllWithDetailsAsync(query => query.Include(u => u.Role));
             var users = entities.Select(UserFactory.Create).ToList();
             return users;
         }

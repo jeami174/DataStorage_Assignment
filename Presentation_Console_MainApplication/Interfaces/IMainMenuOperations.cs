@@ -30,6 +30,11 @@ namespace Presentation_Console_MainApplication.Interfaces
         Task MenuOptionShowProjectDetailsAsync();
 
         /// <summary>
+        /// Tar bort ett befintligt projekt.
+        /// </summary>
+        Task MenuOptionDeleteProjectAsync();
+
+        /// <summary>
         /// Avslutar applikationen.
         /// </summary>
         void MenuOptionQuit();

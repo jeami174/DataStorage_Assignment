@@ -13,4 +13,12 @@ public class UnitFactory
             UnitName = entity.UnitName
         };
     }
+
+    public static UnitEntity CreateUnitEntity(string name)
+    {
+        return new UnitEntity
+        {
+            UnitName = name
+        };
+    }
 }

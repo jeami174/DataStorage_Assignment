@@ -1,6 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-using Presentation_Console_MainApplication.Interfaces;
+﻿using Presentation_Console_MainApplication.Interfaces;
 
 namespace Presentation_Console_MainApplication.Dialogs
 {
@@ -14,6 +12,7 @@ namespace Presentation_Console_MainApplication.Dialogs
             Console.WriteLine($"{"2.",-4} Edit a Project");
             Console.WriteLine($"{"3.",-4} List Projects");
             Console.WriteLine($"{"4.",-4} Show Project Details");
+            Console.WriteLine($"{"5.",-4} Delete a Project");
             Console.WriteLine($"{"Q.",-4} Quit Application");
             Console.WriteLine("----------------------------------------");
             Console.Write("Choose your menu option: ");
@@ -36,6 +35,9 @@ namespace Presentation_Console_MainApplication.Dialogs
                     break;
                 case "4":
                     await handler.MenuOptionShowProjectDetailsAsync();
+                    break;
+                case "5":
+                    await handler.MenuOptionDeleteProjectAsync();
                     break;
                 default:
                     handler.MenuOptionInvalid();

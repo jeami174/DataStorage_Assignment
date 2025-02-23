@@ -1,12 +1,9 @@
 ﻿using Business.Dtos;
 using Business.Factories;
-using Business.Models;
 using Data.Entities;
-using Xunit;
-using System;
 
 namespace Business.Tests.Factories;
-    public class ProjectFactory_Tests 
+public class ProjectFactory_Tests 
 {
     [Fact]
     public void CreateProjectEntity_ShouldReturnEntity_WithCorrectValues()
@@ -25,7 +22,7 @@ namespace Business.Tests.Factories;
         };
 
         // Act
-        var result = ProjectFactory.CreateProjectEntity(dto);
+        var result = ProjectFactory.CreateProjectEntity(dto, 0);
 
         // Assert
         Assert.Equal(dto.Title, result.Title);

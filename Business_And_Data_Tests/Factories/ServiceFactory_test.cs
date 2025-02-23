@@ -104,10 +104,6 @@ public class ServiceFactory_Tests
         Assert.Equal(project1.Description, projModel.Description);
         Assert.Equal(project1.QuantityofServiceUnits, projModel.QuantityofServiceUnits);
         Assert.Equal(project1.TotalPrice, projModel.TotalPrice);
-        Assert.Equal(project1.CustomerId, projModel.CustomerId);
-        Assert.Equal(project1.StatusId, projModel.StatusId);
-        Assert.Equal(project1.UserId, projModel.UserId);
-        Assert.Equal(project1.ServiceId, projModel.ServiceId);
     }
 
     [Fact]

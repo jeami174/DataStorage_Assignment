@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Threading.Tasks;
-using Business.Dtos;
-using Business.Models;
+﻿using System.Globalization;
+using Business.Factories;
 using Business.Interfaces;
 
 namespace Presentation_Console_MainApplication.Dialogs
@@ -18,9 +13,10 @@ namespace Presentation_Console_MainApplication.Dialogs
             IServiceService serviceService,
             IUserService userService,
             IUserRoleService userRoleService,
-            IStatusTypeService statusTypeService, // Lägg till statusTypeService
-            IList<ProjectModel> projects)
+            IStatusTypeService statusTypeService)
         {
+            var projects = (await projectService.GetAllProjectsWithDetailsAsync()).ToList();
+
             Console.Clear();
             Console.WriteLine("------------- EDIT PROJECT -------------");
 
@@ -34,15 +30,7 @@ namespace Presentation_Console_MainApplication.Dialogs
                 return;
             }
             var project = projects[index];
-            var updateDto = new ProjectUpdateDto
-            {
-                Title = project.Title,
-                Description = project.Description,
-                StartDate = project.StartDate,
-                EndDate = project.EndDate,
-                QuantityofServiceUnits = project.QuantityofServiceUnits,
-                StatusTypeId = project.Status.Id // Behåll nuvarande status som standard
-            };
+            var updateDto = ProjectFactory.CreateUpdateDto(project);
 
             Console.WriteLine("----------------------------------------");
             Console.WriteLine($"Current Title: {project.Title}");
@@ -82,45 +70,9 @@ namespace Presentation_Console_MainApplication.Dialogs
             input = Console.ReadLine()!;
             if (input.ToLower() == "y")
             {
-                // Hämta tillgängliga statusar från databasen
-                var statuses = (await statusTypeService.GetAllStatusTypesAsync()).ToList();
-
-                // Definiera de tre fasta valen
-                var statusOptions = new Dictionary<int, string>
-                {
-                    { 1, "Not Started" },
-                    { 2, "In Progress" },
-                    { 3, "Completed" }
-                };
-
-                Console.WriteLine("Select new status:");
-                foreach (var option in statusOptions)
-                {
-                    Console.WriteLine($"  {option.Key}. {option.Value}");
-                }
-                Console.Write("Enter the number corresponding to the desired status: ");
-                input = Console.ReadLine()!;
-                if (int.TryParse(input, out int statusChoice) && statusOptions.ContainsKey(statusChoice))
-                {
-                    // Hitta motsvarande StatusTypeId baserat på det valda namnet
-                    var selectedStatusName = statusOptions[statusChoice];
-                    var selectedStatus = statuses.FirstOrDefault(s => s.StatusTypeName.Equals(selectedStatusName, StringComparison.OrdinalIgnoreCase));
-                    if (selectedStatus != null)
-                    {
-                        updateDto.StatusTypeId = selectedStatus.Id;
-                    }
-                    else
-                    {
-                        Console.WriteLine("Selected status not found in the database.");
-                    }
-                }
-                else
-                {
-                    Console.WriteLine("Invalid selection. Keeping current status.");
-                }
+                var statusTypes = (await statusTypeService.GetAllStatusTypesAsync()).ToList();
+                updateDto.StatusId = SelectStatusTypeDialog.Show(statusTypes);
             }
-
-            // Fortsätt med resten av redigeringsprocessen...
 
             Console.Write("Press any key to save project changes...");
             Console.ReadKey();

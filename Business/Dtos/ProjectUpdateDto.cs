@@ -18,8 +18,5 @@ public class ProjectUpdateDto
     [Range(1, int.MaxValue, ErrorMessage = "Quantity must be at least 1")]
     public int QuantityofServiceUnits { get; set; }
 
-    public decimal TotalPrice { get; set; }
-
     public int StatusId { get; set; }
-    public int StatusTypeId { get; set; }
 }

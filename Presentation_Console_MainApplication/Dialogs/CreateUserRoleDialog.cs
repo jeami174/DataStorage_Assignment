@@ -1,9 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Collections.Generic;
-using Business.Dtos;
-using Business.Models;
+﻿using Business.Dtos;
 using Business.Interfaces;
 
 namespace Presentation_Console_MainApplication.Dialogs
@@ -18,15 +13,21 @@ namespace Presentation_Console_MainApplication.Dialogs
         {
             var roles = (await userRoleService.GetAllUserRolesAsync()).ToList();
             Console.WriteLine("Role selection:");
-            Console.WriteLine("Do you want to:");
-            Console.WriteLine("1. Select existing role");
-            Console.WriteLine("2. Create new role");
-            Console.Write("Enter your choice (1 or 2): ");
-            var choice = Console.ReadLine();
 
-            if (choice == "1")
+            if (roles.Count == 0)
             {
-                if (roles.Count > 0)
+                Console.WriteLine("No roles available. Creating a new role.");
+                return await CreateNewRoleAsync(userRoleService);
+            }
+            else
+            {
+                Console.WriteLine("Do you want to:");
+                Console.WriteLine("1. Select existing role");
+                Console.WriteLine("2. Create new role");
+                Console.Write("Enter your choice (1 or 2): ");
+                var choice = Console.ReadLine();
+
+                if (choice == "1")
                 {
                     Console.WriteLine("Available roles:");
                     for (int i = 0; i < roles.Count; i++)
@@ -44,20 +45,15 @@ namespace Presentation_Console_MainApplication.Dialogs
                         return roles[roleIndex - 1].Id;
                     }
                 }
-                else
+                else if (choice == "2")
                 {
-                    Console.WriteLine("No roles available. Creating a new role.");
                     return await CreateNewRoleAsync(userRoleService);
                 }
-            }
-            else if (choice == "2")
-            {
-                return await CreateNewRoleAsync(userRoleService);
-            }
-            else
-            {
-                Console.WriteLine("Invalid input, defaulting to existing role if available.");
-                return roles.Count > 0 ? roles[0].Id : await CreateNewRoleAsync(userRoleService);
+                else
+                {
+                    Console.WriteLine("Invalid input, defaulting to an existing role.");
+                    return roles[0].Id;
+                }
             }
         }
 

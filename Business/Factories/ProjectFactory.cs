@@ -6,12 +6,7 @@ namespace Business.Factories;
 
 public static class ProjectFactory
 {
-    public static ProjectCreateDto Create()
-    {
-        return new ProjectCreateDto();
-    }
-
-    public static ProjectEntity CreateProjectEntity(ProjectCreateDto dto)
+    public static ProjectEntity CreateProjectEntity(ProjectCreateDto dto, decimal servicePricePerUnit)
     {
         return new ProjectEntity
         {
@@ -24,6 +19,7 @@ public static class ProjectFactory
             ServiceId = dto.ServiceId,
             StatusId = dto.StatusId,
             UserId = dto.UserId,
+            TotalPrice = servicePricePerUnit * dto.QuantityofServiceUnits
         };
     }
 
@@ -34,6 +30,21 @@ public static class ProjectFactory
         entity.StartDate = dto.StartDate;
         entity.EndDate = dto.EndDate;
         entity.QuantityofServiceUnits = dto.QuantityofServiceUnits;
+        entity.TotalPrice = entity.Service.PricePerUnit * dto.QuantityofServiceUnits;
+        entity.StatusId = dto.StatusId;
+    }
+
+    public static ProjectUpdateDto CreateUpdateDto(ProjectModel model)
+    {
+        return new ProjectUpdateDto
+        {
+            Title = model.Title,
+            Description = model.Description,
+            StartDate = model.StartDate,
+            EndDate = model.EndDate,
+            QuantityofServiceUnits = model.QuantityofServiceUnits,
+            StatusId= model.Status.Id
+        };
     }
 
     public static ProjectModel CreateProjectModel(ProjectEntity entity)

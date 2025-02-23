@@ -8,4 +8,9 @@ public class CustomerContactModel
     public string Email { get; set; } = null!;
     public int CustomerId { get; set; }
     public CustomerModel Customer { get; set; } = null!;
+
+    public override string ToString()
+    {
+        return $"{FirstName} {LastName}";
+    }
 }

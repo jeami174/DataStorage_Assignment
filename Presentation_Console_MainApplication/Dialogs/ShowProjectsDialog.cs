@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Business.Models;
+﻿using Business.Models;
 
 namespace Presentation_Console_MainApplication.Dialogs
 {
     public static class ShowProjectsDialog
     {
-        public static async Task ShowAsync(IEnumerable<ProjectModel> projects)
+        public static void Show(IEnumerable<ProjectModel> projects)
         {
             Console.Clear();
             Console.WriteLine("------------- ALL PROJECTS -------------");
@@ -29,7 +25,6 @@ namespace Presentation_Console_MainApplication.Dialogs
             Console.WriteLine("----------------------------------------");
             Console.WriteLine("Press any key to return to the main menu...");
             Console.ReadKey();
-            await Task.CompletedTask;
         }
     }
 }

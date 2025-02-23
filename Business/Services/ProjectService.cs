@@ -24,11 +24,15 @@ public class ProjectService(IProjectRepository projectRepository, IServiceReposi
         if (exists)
             return false;
 
+        var serviceEntity = await _serviceRepository.GetOneAsync(s => s.Id == dto.ServiceId);
+        if (serviceEntity == null)
+            return false;
+
         await _projectRepository.BeginTransactionAsync();
 
         try
         {
-            var projectEntity = ProjectFactory.CreateProjectEntity(dto);
+            var projectEntity = ProjectFactory.CreateProjectEntity(dto, serviceEntity.PricePerUnit);
             await _projectRepository.CreateAsync(projectEntity);
             await _projectRepository.SaveToDatabaseAsync();
             await _projectRepository.CommitTransactionAsync();
@@ -92,8 +96,10 @@ public class ProjectService(IProjectRepository projectRepository, IServiceReposi
 
     public async Task<IEnumerable<ProjectModel>> GetAllProjectsAsync()
     {
-        var entities = await _projectRepository.GetAllAsync();
-        return entities.Select(ProjectFactory.CreateProjectModel).ToList();
+        //var entities = await _projectRepository.GetAllAsync();
+        //return entities.Select(ProjectFactory.CreateProjectModel).ToList();
+
+        throw new NotImplementedException();    // Vi har ingen simpel model for projects
     }
 
     public async Task<IEnumerable<ProjectModel>> GetAllProjectsWithDetailsAsync()

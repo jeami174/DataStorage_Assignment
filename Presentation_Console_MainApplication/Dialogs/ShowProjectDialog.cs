@@ -1,41 +1,63 @@
-﻿using System;
-using System.Threading.Tasks;
-using Business.Models;
+﻿using Business.Models;
+using Business.Interfaces;
 
-namespace Presentation_Console_MainApplication.Dialogs
+namespace Presentation_Console_MainApplication.Dialogs;
+
+public static class ShowProjectDialog
 {
-    /// <summary>
-    /// Konsoldialog för att visa detaljer om ett enskilt projekt.
-    /// </summary>
-    public static class ShowProjectDialog
+    public static async Task ShowAsync(IProjectService projectService)
     {
-        public static async Task ShowAsync(IList<ProjectModel> projects)
+        Console.Clear();
+        Console.WriteLine("------------- ALL PROJECTS -------------");
+
+        var projects = await projectService.GetAllProjectsWithDetailsAsync();
+
+        if (projects.Any())
         {
-            Console.Clear();
-            Console.WriteLine("--------- SHOW PROJECT DETAILS ---------");
-
-            // Använd en dialog för att välja vilket projekt som ska redigeras.
-            // Vi utgår från att du har en SelectProjectDialog som returnerar index.
-            int index = SelectProjectDialog.Show(projects);
-
-            if (index >= 0)
+            int index = 1;
+            foreach (var project in projects)
             {
-                Console.WriteLine("----------------------------------------");
-                Console.WriteLine($"[{projects[index].Id}] {projects[index].Title}");
-                Console.WriteLine($"Status: {projects[index].Status.StatusTypeName}");
-                Console.WriteLine($"Beskrivning: {projects[index].Description ?? "Ingen beskrivning"}");
-                Console.WriteLine($"Startdatum: {projects[index].StartDate:yyyy-MM-dd}");
-                Console.WriteLine($"Slutdatum: {projects[index].EndDate:yyyy-MM-dd}");
-                Console.WriteLine($"Kund: {projects[index].Customer.ToString()}");
-                Console.WriteLine($"Service: {projects[index].Service.ToString()}");
-                Console.WriteLine($"User: {projects[index].User.ToString()}");
-                Console.WriteLine("----------------------------------------");
+                Console.WriteLine($"{index++}. [{project.Id}] {project.Title.PadRight(20)} | {project.StartDate.ToShortDateString()} - {project.EndDate.ToShortDateString()} | {project.Status.StatusTypeName}");
             }
 
-            Console.WriteLine("Press any key to return to the main menu...");
-            Console.ReadKey();
+            Console.WriteLine("----------------------------------------");
+            Console.Write("Enter the number of the project to view details or press Enter to return: ");
+            var input = Console.ReadLine();
 
-            await Task.CompletedTask;
+            if (int.TryParse(input, out int selectedIndex) && selectedIndex > 0 && selectedIndex <= projects.Count())
+            {
+                var selectedProject = projects.ElementAt(selectedIndex - 1);
+                ShowProjectDetails(selectedProject);
+            }
+            else
+            {
+                Console.WriteLine("Invalid selection. Returning to main menu.");
+            }
         }
+        else
+        {
+            Console.WriteLine("No projects found.");
+        }
+
+        Console.WriteLine("Press any key to return to the main menu...");
+        Console.ReadKey();
+    }
+
+    private static void ShowProjectDetails(ProjectModel project)
+    {
+        Console.Clear();
+        Console.WriteLine("--------- PROJECT DETAILS ---------");
+        Console.WriteLine($"ID: {project.Id}");
+        Console.WriteLine($"Title: {project.Title}");
+        Console.WriteLine($"Description: {project.Description ?? "No description"}");
+        Console.WriteLine($"Start Date: {project.StartDate:yyyy-MM-dd}");
+        Console.WriteLine($"End Date: {project.EndDate:yyyy-MM-dd}");
+        Console.WriteLine($"Status: {project.Status.StatusTypeName}");
+        Console.WriteLine($"Customer: {project.Customer.CustomerName} ({project.Customer.CustomerContacts.First()?.ToString()})");
+        Console.WriteLine($"Service: {project.Service.ServiceName} ({project.Service.Unit.UnitName}, {project.Service.PricePerUnit})");
+        Console.WriteLine($"Quantity: {project.QuantityofServiceUnits}");
+        Console.WriteLine($"Total Price: {project.TotalPrice}");
+        Console.WriteLine($"Employee: {project.User.FirstName} {project.User.LastName} ({project.User.Role.RoleName})");
+        Console.WriteLine("-----------------------------------");
     }
 }

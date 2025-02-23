@@ -10,12 +10,6 @@
         public int QuantityofServiceUnits { get; set; }
         public decimal TotalPrice { get; set; }
 
-        public int CustomerId { get; set; }
-        public int ServiceId { get; set; }
-        public int StatusId { get; set; }
-        public int UserId { get; set; }
-
-
         public CustomerModel Customer { get; set; } = null!;
         public ServiceModel Service { get; set; } = null!;
         public StatusTypeModel Status { get; set; } = null!;
