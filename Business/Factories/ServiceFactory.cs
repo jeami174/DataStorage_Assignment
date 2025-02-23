@@ -23,11 +23,6 @@ public static class ServiceFactory
     {
         var projects = new List<ProjectModel>();
 
-        //foreach (var row in entity.Projects)
-        //{
-        //    projects.Add(ProjectFactory.CreateProjectModel(row));
-        //}
-
         return new ServiceModel()
         {
             Id = entity.Id,

@@ -94,14 +94,6 @@ public class ProjectService(IProjectRepository projectRepository, IServiceReposi
         }
     }
 
-    public async Task<IEnumerable<ProjectModel>> GetAllProjectsAsync()
-    {
-        //var entities = await _projectRepository.GetAllAsync();
-        //return entities.Select(ProjectFactory.CreateProjectModel).ToList();
-
-        throw new NotImplementedException();    // Vi har ingen simpel model for projects
-    }
-
     public async Task<IEnumerable<ProjectModel>> GetAllProjectsWithDetailsAsync()
     {
         var entities = await _projectRepository.GetAllWithDetailsAsync(query =>

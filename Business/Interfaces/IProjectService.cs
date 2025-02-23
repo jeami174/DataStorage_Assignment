@@ -9,7 +9,6 @@ namespace Business.Interfaces
         Task<bool> CreateProjectAsync(ProjectCreateDto dto);
         Task<bool> UpdateProjectAsync(int id, ProjectUpdateDto dto);
         Task<bool> DeleteProjectAsync(int id);
-        Task<IEnumerable<ProjectModel>> GetAllProjectsAsync();
         Task<IEnumerable<ProjectModel>> GetAllProjectsWithDetailsAsync();
         Task<ProjectModel?> GetProjectWithDetailsByIdAsync(int id);
     }

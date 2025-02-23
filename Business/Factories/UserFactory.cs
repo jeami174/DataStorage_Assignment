@@ -26,11 +26,6 @@ public class UserFactory
     {
         var projects = new List<ProjectModel>();
 
-        //foreach (var row in entity.Projects)
-        //{            
-        //    projects.Add(ProjectFactory.CreateProjectModel(row));
-        //}
-
         return new UserModel()
         {
             Id = entity.Id,

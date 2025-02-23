@@ -17,7 +17,6 @@ namespace Business.Services
 
         public void EnsureDefaultStatusTypes()
         {
-            // Skapa standard status typer om de inte finns
             List<string> requiredStatuses = new List<string> { "Not started", "Started", "Completed" };
             foreach (var status in requiredStatuses)
             {

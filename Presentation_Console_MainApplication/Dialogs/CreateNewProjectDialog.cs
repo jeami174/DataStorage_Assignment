@@ -41,7 +41,6 @@ namespace Presentation_Console_MainApplication.Dialogs
             else
                 projectCreateDto.EndDate = DateTime.Now.AddDays(1);
 
-            // Serviceval - välj mellan befintlig eller skapa ny (med möjlighet att ange pris och enhet)
             var services = (await serviceService.GetAllServicesAsync()).ToList();
             if (services.Count == 0)
             {
@@ -70,7 +69,6 @@ namespace Presentation_Console_MainApplication.Dialogs
                 }
             }
 
-            // Antal enheter av service
             Console.Write("Quantity of service (enter number): ");
             if (!int.TryParse(Console.ReadLine(), out int serviceQuantity) ||
                 serviceQuantity <= 0)
@@ -83,7 +81,6 @@ namespace Presentation_Console_MainApplication.Dialogs
                 projectCreateDto.QuantityofServiceUnits = serviceQuantity;
             }
 
-            // Kundval – välj mellan befintlig eller skapa ny (med möjlighet att koppla en kontaktperson)
             var customers = (await customerService.GetAllCustomersAsync()).ToList();
             if (customers.Count == 0)
             {
@@ -94,7 +91,7 @@ namespace Presentation_Console_MainApplication.Dialogs
             {
                 Console.WriteLine("Do you want to:");
                 Console.WriteLine("1. Add existing customer");
-                Console.WriteLine("2. Create new customer (with optional contact)");
+                Console.WriteLine("2. Create new customer");
                 Console.Write("Enter your choice (1 or 2): ");
                 var customerChoice = Console.ReadLine();
                 if (customerChoice == "1")
@@ -112,7 +109,6 @@ namespace Presentation_Console_MainApplication.Dialogs
                 }
             }
 
-            // Employee (User) val – välj mellan befintlig employee eller skapa en ny via CreateNewUserDialogs
             var employees = (await userService.GetAllUsersAsync()).ToList();
             if (employees.Count == 0)
             {
@@ -141,11 +137,9 @@ namespace Presentation_Console_MainApplication.Dialogs
                 }
             }
 
-            // Statusval – använd den nya dialogen för att välja en statustyp
             var statusTypes = (await statusTypeService.GetAllStatusTypesAsync()).ToList();
             projectCreateDto.StatusId = SelectStatusTypeDialog.Show(statusTypes);
 
-            // Skicka projekt-DTO:t till projektservicen
             bool created = await projectService.CreateProjectAsync(projectCreateDto);
             if (created)
                 Console.WriteLine("Project created successfully!");
