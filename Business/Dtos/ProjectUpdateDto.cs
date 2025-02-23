@@ -20,4 +20,6 @@ public class ProjectUpdateDto
 
     public decimal TotalPrice { get; set; }
 
+    public int StatusId { get; set; }
+    public int StatusTypeId { get; set; }
 }

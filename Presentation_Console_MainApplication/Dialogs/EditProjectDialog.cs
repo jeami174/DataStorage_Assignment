@@ -1,41 +1,142 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
 using System.Threading.Tasks;
 using Business.Dtos;
 using Business.Models;
+using Business.Interfaces;
 
 namespace Presentation_Console_MainApplication.Dialogs
 {
-    /// <summary>
-    /// Delegate för EditProjectDialog.
-    /// Anropas när användaren har angett de uppdaterade projektdetaljerna.
-    /// </summary>
-    internal delegate Task EditProjectDialogDelegate(int id, ProjectUpdateDto dto);
-
-    /// <summary>
-    /// Konsoldialog för att redigera ett befintligt projekt (asynkront).
-    /// </summary>
-    internal static class EditProjectDialog
+    public static class EditProjectDialog
     {
-        public static async Task ShowAsync(IList<ProjectModel> projects, IList<StatusTypeModel> statuses, EditProjectDialogDelegate callback)
+        public static async Task EditProjectAsync(
+            IProjectService projectService,
+            ICustomerService customerService,
+            ICustomerContactService customerContactService,
+            IServiceService serviceService,
+            IUserService userService,
+            IUserRoleService userRoleService,
+            IStatusTypeService statusTypeService, // Lägg till statusTypeService
+            IList<ProjectModel> projects)
         {
             Console.Clear();
             Console.WriteLine("------------- EDIT PROJECT -------------");
 
-            // Använd en dialog för att välja vilket projekt som ska redigeras.
-            // Vi utgår från att du har en SelectProjectDialog som returnerar index.
+            // Välj projekt att redigera
             int index = SelectProjectDialog.Show(projects);
-
-            if (index != -1)
+            if (index == -1)
             {
-                // Samla in de uppdaterade uppgifterna med hjälp av InputProjectUpdateDialog.
-                var updateDto = InputProjectUpdateDialog.Show(projects[index], statuses);
-                // Anropa callbacken asynkront med det valda projektets ID och de nya uppgifterna.
-                await callback(projects[index].Id, updateDto);
+                Console.WriteLine("No valid project selected.");
+                Console.Write("Press any key to return to the main menu...");
+                Console.ReadKey();
+                return;
+            }
+            var project = projects[index];
+            var updateDto = new ProjectUpdateDto
+            {
+                Title = project.Title,
+                Description = project.Description,
+                StartDate = project.StartDate,
+                EndDate = project.EndDate,
+                QuantityofServiceUnits = project.QuantityofServiceUnits,
+                StatusTypeId = project.Status.Id // Behåll nuvarande status som standard
+            };
+
+            Console.WriteLine("----------------------------------------");
+            Console.WriteLine($"Current Title: {project.Title}");
+            Console.Write("New Title (leave empty to keep current): ");
+            string input = Console.ReadLine()!;
+            if (!string.IsNullOrWhiteSpace(input))
+                updateDto.Title = input;
+
+            Console.WriteLine($"Current Description: {project.Description}");
+            Console.Write("New Description (leave empty to keep current): ");
+            input = Console.ReadLine()!;
+            if (!string.IsNullOrWhiteSpace(input))
+                updateDto.Description = input;
+
+            Console.WriteLine($"Current Start Date: {project.StartDate:yyyy-MM-dd}");
+            Console.Write("New Start Date (yyyy-MM-dd, leave empty to keep current): ");
+            input = Console.ReadLine()!;
+            if (!string.IsNullOrWhiteSpace(input) &&
+                DateTime.TryParseExact(input, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime newStart))
+                updateDto.StartDate = newStart;
+
+            Console.WriteLine($"Current End Date: {project.EndDate:yyyy-MM-dd}");
+            Console.Write("New End Date (yyyy-MM-dd, leave empty to keep current): ");
+            input = Console.ReadLine()!;
+            if (!string.IsNullOrWhiteSpace(input) &&
+                DateTime.TryParseExact(input, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime newEnd))
+                updateDto.EndDate = newEnd;
+
+            Console.WriteLine($"Current Quantity: {project.QuantityofServiceUnits}");
+            Console.Write("New Quantity (leave empty to keep current): ");
+            input = Console.ReadLine()!;
+            if (!string.IsNullOrWhiteSpace(input) && int.TryParse(input, out int qty))
+                updateDto.QuantityofServiceUnits = qty;
+
+            // Fråga om användaren vill uppdatera projektets status
+            Console.Write("Do you want to update the project status? (y/n): ");
+            input = Console.ReadLine()!;
+            if (input.ToLower() == "y")
+            {
+                // Hämta tillgängliga statusar från databasen
+                var statuses = (await statusTypeService.GetAllStatusTypesAsync()).ToList();
+
+                // Definiera de tre fasta valen
+                var statusOptions = new Dictionary<int, string>
+                {
+                    { 1, "Not Started" },
+                    { 2, "In Progress" },
+                    { 3, "Completed" }
+                };
+
+                Console.WriteLine("Select new status:");
+                foreach (var option in statusOptions)
+                {
+                    Console.WriteLine($"  {option.Key}. {option.Value}");
+                }
+                Console.Write("Enter the number corresponding to the desired status: ");
+                input = Console.ReadLine()!;
+                if (int.TryParse(input, out int statusChoice) && statusOptions.ContainsKey(statusChoice))
+                {
+                    // Hitta motsvarande StatusTypeId baserat på det valda namnet
+                    var selectedStatusName = statusOptions[statusChoice];
+                    var selectedStatus = statuses.FirstOrDefault(s => s.StatusTypeName.Equals(selectedStatusName, StringComparison.OrdinalIgnoreCase));
+                    if (selectedStatus != null)
+                    {
+                        updateDto.StatusTypeId = selectedStatus.Id;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Selected status not found in the database.");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Invalid selection. Keeping current status.");
+                }
             }
 
-            Console.WriteLine("Press any key to return to the main menu...");
+            // Fortsätt med resten av redigeringsprocessen...
+
+            Console.Write("Press any key to save project changes...");
+            Console.ReadKey();
+
+            bool projectUpdated = await projectService.UpdateProjectAsync(project.Id, updateDto);
+            if (projectUpdated)
+                Console.WriteLine("Project updated successfully!");
+            else
+                Console.WriteLine("Failed to update project.");
+
+            Console.Write("Press any key to return to the main menu...");
             Console.ReadKey();
         }
     }
 }
+
+
+
+

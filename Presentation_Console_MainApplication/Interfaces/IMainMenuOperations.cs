@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using Presentation_Console_MainApplication.Dialogs;
 
 namespace Presentation_Console_MainApplication.Interfaces
 {
@@ -37,5 +38,8 @@ namespace Presentation_Console_MainApplication.Interfaces
         /// Hanterar ogiltiga menyval.
         /// </summary>
         void MenuOptionInvalid();
+
+ 
+
     }
 }

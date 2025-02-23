@@ -72,8 +72,15 @@ public class ConsoleUserInterface : IUserInterface, IMainMenuOperations
         var customers = await _customerService.GetAllCustomersAsync();
         var services = await _serviceService.GetAllServicesAsync();
         var users = await _userService.GetAllUsersAsync();
-        await CreateProjectDialog.ShowAsync(customers.ToList(), services.ToList(), users.ToList(), OnCreateProject);
+        var statusTypes = await _statusTypeService.GetAllStatusTypesAsync();
+        await CreateProjectDialog.ShowAsync(
+             customers.ToList(),
+             services.ToList(),
+             users.ToList(),
+             statusTypes.ToList(),
+             OnCreateProject);
     }
+
 
     public async Task MenuOptionEditProjectAsync()
     {
